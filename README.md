@@ -1,4 +1,4 @@
 object-visualizer.js
 ====================
 
-Visualize Javascript objects
+Visualize Javascript objects.

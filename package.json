@@ -1,0 +1,29 @@
+{
+  "name": "object-visualizer.js",
+  "version": "0.1.0",
+  "description": "Visualize dynamic javascript objects with the DOM.",
+  "main": "visualizer.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jmeas/object-visualizer.js.git"
+  },
+  "keywords": [
+    "javascript",
+    "object",
+    "visualizer",
+    "diff",
+    "dom"
+  ],
+  "author": "Jmeas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jmeas/object-visualizer.js/issues"
+  },
+  "dependencies": {
+    "jsondiffpatch": "0.0.11",
+    "sizzle": "~1.1.0"
+  }
+}
