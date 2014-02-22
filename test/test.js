@@ -10,11 +10,13 @@
 
 // vis.update( x );
 
-var x = 'hello';
-var vis = new Visualizer( x );
+var testEl = document.getElementById( 'test' );
 
+var x = [
+  'wut',
+  'ok'
+];
 
-document.getElementById("test")
-  .appendChild(
-    vis.render()
-  );
+var vis = new Visualizer( x, testEl );
+
+vis.render();
