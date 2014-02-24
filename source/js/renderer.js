@@ -1,7 +1,12 @@
-// A DOM renderer
-var Renderer = function() {
+/*
+ *
+ * Visualizer
+ * Renders JS objects
+ *
+ */
 
-  this.modkey = this._modkey();
+
+var Renderer = function() {
 
   // Create basic elements from which to clone from
   this.base = {
@@ -29,7 +34,7 @@ var Renderer = function() {
     bracketOpen : this.createEl( 'span', 'bracket bracket-open', '[' ),
     bracketClose : this.createEl( 'span', 'bracket bracket-close', ']' ),
     braceOpen : this.createEl( 'span', 'brace brace-open', '{' ),
-    braceClose : this.createEl( 'span', 'brace brace-close', '{' ),
+    braceClose : this.createEl( 'span', 'brace brace-close', '}' ),
     ellipsis: this.createEl( 'span', 'ellipsis' ),
     comma: this.createEl( 'span', 'comma', ',' ),
     sep: this.createEl( 'span', 'sep', ':\u00A0' )
@@ -101,15 +106,9 @@ Renderer.prototype._attachValPrefix = function( frag, val, key, type ) {
   if ( key !== false ) {
     frag.classList.add( 'object-property' );
     var keyFrag = this.template( 'key' );
-    // this.setText( keyFrag, JSON.stringify(key).slice(1, -1) );
-
-
-    // // Add it to kvov, with quote marks
-    // kvov.appendChild(templates.t_dblqText.cloneNode(false));
-    // kvov.appendChild( keySpan );
-    // kvov.appendChild(templates.t_dblqText.cloneNode(false));
-    // // Also add ":&nbsp;" (colon and non-breaking space)
-    // kvov.appendChild( templates.t_colonAndSpace.cloneNode(false) );
+    keyFrag = this.setText( keyFrag, JSON.stringify(key).slice(1,-1) );
+    frag = this.wrap( frag, keyFrag, 'quote' );
+    frag = this.append( frag, this.template('sep') );
   }
   else {
     frag.classList.add( 'array-element' );
@@ -122,7 +121,7 @@ Renderer.prototype._attachValPrefix = function( frag, val, key, type ) {
 // Attach the element based on its type
 Renderer.prototype._attachKeyDom = function( frag, val, type ) {
 
-  var innerFrag, childEl;
+  var innerFrag, childEl, i;
 
   switch ( type ) {
 
@@ -137,14 +136,32 @@ Renderer.prototype._attachKeyDom = function( frag, val, type ) {
       frag = this.append( frag, innerFrag );
       break;
 
+    case 'object':
+      frag = this.append( frag, this.template('braceOpen') );
+      if ( !this._empty(val) ) {
+        frag = this.append( frag, this.template('ellipsis') );
+        innerFrag = this.template( 'innerBlock' );
+        for ( i in val ) {
+          if ( val.hasOwnProperty(i) ) {
+            childEl = this._buildObjEl( val[i], i );
+            if ( i < val.length - 1 ) {
+              childEl = this.append( childEl, this.template('comma') );
+            }
+            innerFrag = this.append( innerFrag, childEl );
+          }
+        }
+        frag = this.append( frag, innerFrag );
+      }
+      frag = this.append( frag, this.template('braceClose') );
+      break;
+
     case 'array':
       frag = this.append( frag, this.template('bracketOpen') );
       if ( !this._empty(val) ) {
         frag = this.append( frag, this.template('ellipsis') );
         innerFrag = this.template( 'innerBlock' );
-        var i;
         for ( i = 0; i < val.length; i++ ) {
-          childEl = this._buildObjEl( val[i], val );
+          childEl = this._buildObjEl( val[i], false );
           if ( i < val.length - 1 ) {
             childEl = this.append( childEl, this.template('comma') );
           }
@@ -155,8 +172,28 @@ Renderer.prototype._attachKeyDom = function( frag, val, type ) {
       frag = this.append( frag, this.template('bracketClose') );
       break;
 
+    case 'number':
+      frag = this.setText( frag, val );
+      frag.classList.add( 'number' );
+      break;
+
+    case 'regex':
+      frag = this.setText( frag, val );
+      frag.classList.add( 'regex' );
+      break;
+
+    case 'boolean':
+      frag = this.setText( frag, val );
+      frag.classList.add( 'boolean' );
+      break;
+
+    case 'null':
+      frag = this.setText( frag, 'null' );
+      frag.classList.add( 'null' );
+      break;
+
     default:
-      console.log('default type');
+      console.log('default type', type);
       var text = JSON.stringify( val );
       frag = this.setText( frag, text );
       break;
@@ -164,9 +201,6 @@ Renderer.prototype._attachKeyDom = function( frag, val, type ) {
   }
 
   return frag;
-
-  // var text = JSON.stringify( val );
-  // return this.setText( frag, text );
 
 };
 
@@ -246,7 +280,7 @@ Renderer.prototype.clickHandler = function( ev ) {
     if (elem.className === 'icon-arrow' ) {
       ev.preventDefault();
       var parent = elem.parentNode;
-      var els = ev[this.modkey] ? parent : Array.prototype.slice.call( parent.parentNode.children );
+      var els = !ev[Renderer.prototype._modkey()] ? parent : Array.prototype.slice.call( parent.parentNode.children );
       var expand = parent.classList.contains( 'collapsed' ) ? true : false;
       Renderer.prototype.toggle( els, expand );
       return;
@@ -257,16 +291,17 @@ Renderer.prototype.clickHandler = function( ev ) {
 
 Renderer.prototype.toggle = function( els, expand ) {
 
-  // Normalize arguments
-  if ( !(els instanceof Array) ) {
-    els = [];
-    els.push( els );
+  var elems = [];
+  if ( els instanceof Array ) {
+    elems = els;
+  } else {
+    elems.push( els );
   }
 
-  if ( expand && els.length ) {
-    Renderer.prototype.expand( els );
+  if ( expand && elems.length ) {
+    Renderer.prototype.expand( elems );
   } else {
-    Renderer.prototype.collapse( els );
+    Renderer.prototype.collapse( elems );
   }
 
 };

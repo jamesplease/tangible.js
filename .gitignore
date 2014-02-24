@@ -16,3 +16,5 @@ node_modules
 bower_components
 test/ref.js
 test/syntax.json
+.tmp
+build

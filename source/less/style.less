@@ -1,4 +1,13 @@
-@import 'templates//* @echo THEME */';
+// The default, plain colors
+@import 'themes/basic.less';
+
+// Overwrite those colors with the theme
+@import 'themes//* @echo THEME */.less';
+
+// Apply the theme colors
+@import 'theme.less';
+
+// The main style sheet
 @import 'base.less';
 
-// @echo NODE_ENV
+

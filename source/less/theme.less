@@ -1,0 +1,45 @@
+/* Apply theme colors */
+
+.selection( @bg ) {
+  background: @bg;
+  text-shadow: none;
+}
+
+.js-visualizer {
+  cursor: default;
+  background: @bg;
+  & ::-moz-selection{
+    .selection( @activeBg );
+  }
+  & ::selection {
+    .selection( @activeBg );
+  } 
+}
+
+.comma, .sep {
+  color: @baseText;
+}
+
+.ellipsis {
+  color: @comment;
+}
+
+.quote, .string, .key {
+  color: @string;
+}
+
+.regex {
+  color: @regex;
+}
+
+.boolean {
+  color: @boolean;
+}
+
+.number {
+  color: @number;
+}
+
+.null {
+  color: @null;
+}

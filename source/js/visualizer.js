@@ -1,3 +1,10 @@
+/*
+ *
+ * Visualizer
+ * Exposes an API to render and update JS objects
+ *
+ */
+
 var Visualizer = function( obj, el ) {
 
   this.Sizzle = Sizzle;
@@ -19,6 +26,8 @@ Visualizer.prototype.typeOfObj = function( obj ) {
     return 'string';
   } else if ( typeof obj === 'number' ) {
     return 'number';
+  } else if ( typeof obj === 'boolean' ) {
+    return 'boolean';
   } else if ( obj instanceof RegExp ) {
     return 'regex';
   } else if ( obj instanceof Array ) {
@@ -45,10 +54,15 @@ Visualizer.prototype.deepClone = function( obj ) {
 // Call this when your object changes
 Visualizer.prototype.update = function( obj ) {
 
+  if ( typeof obj === 'undefined' ) {
+    return;
+  }
+
   this._oldObj = this._currentObj;
   this._currentObj = this.deepClone( obj );
   this._currentObjType = this.typeOfObj( obj );
   this._updateDelta();
+  this.d.update( this.el, this.delta );
 
 };
 
@@ -68,12 +82,5 @@ Visualizer.prototype.render = function( options ) {
 
   var domFragment = this.r.render( this._currentObj, options  );
   this.el.appendChild( domFragment );
-
-};
-
-// Updates all DOM representations of the object
-Visualizer.prototype.update = function() {
-
-  this.r.updateEl( this.el, this.delta );
 
 };

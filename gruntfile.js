@@ -2,6 +2,9 @@ module.exports = function( grunt ) {
 
   require( 'matchdep' ).filterDev( 'grunt-*' ).forEach( grunt.loadNpmTasks );
 
+  // Pass in the theme via `grunt --theme=mytheme`; defaults to 'tomorrow'
+  var theme = grunt.option('theme') || 'tomorrow';
+
   grunt.initConfig({
 
     clean: [ '.tmp', 'build' ],
@@ -11,14 +14,14 @@ module.exports = function( grunt ) {
         src:   'source/js/wrapper.js',
         dest: '.tmp/visual-json.js'
       },
-      tomorrow: {
+      less: {
         options: {
           context: {
-            THEME: 'tomorrow'
+            THEME: theme
           }
         },
         src: 'source/less/style.less',
-        dest: './tmp/visual-json.less'
+        dest: '.tmp/visual-json.less'
       }
     },
 
@@ -37,10 +40,7 @@ module.exports = function( grunt ) {
 
     less: {
       options: {
-        paths: 'source/less',
-        context: {
-          THEME: 'tomorrow'
-        }
+        paths: [ 'source/less', 'themes' ],
       },
       base: {
         src:  '<%= preprocess.less.dest %>',
@@ -50,16 +50,7 @@ module.exports = function( grunt ) {
 
   });
 
-
-
   // Build the default theme: Tomorrow (light)
-  grunt.registerTask( 'default', ['prebuild', 'preprocess:tomorrow', 'build'] );
-
-  // Build other themes
-  grunt.registerTask( 'default', ['prebuild', 'preprocess:tomorrow', 'build'] );
-
-  // The tasks that wrap setting the theme
-  grunt.registerTask( 'prebuild', [ 'clean', 'preprocess:js'   ] );
-  grunt.registerTask( 'build',    [ 'jshint', 'uglify', 'less' ] );
+  grunt.registerTask( 'default', ['clean', 'preprocess', 'jshint', 'uglify', 'less:'] );
 
 };
