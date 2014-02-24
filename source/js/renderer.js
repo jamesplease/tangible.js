@@ -1,7 +1,7 @@
 /*
  *
  * Visualizer
- * Renders JS objects
+ * Maps JS objects to DOM structures
  *
  */
 

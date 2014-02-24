@@ -1,7 +1,7 @@
 /*
  *
  * Updater
- * Updates a DOM rendering of JSON, given a diff
+ * Updates a DOM rendering of JSON given a diff
  *
  */
 
