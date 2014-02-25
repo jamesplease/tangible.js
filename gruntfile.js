@@ -26,6 +26,10 @@ module.exports = function( grunt ) {
     },
 
     jshint: {
+      options: {
+        '-W086': true,
+        '-W064': true
+      },
       main: {
         src: '<%= preprocess.js.dest %>'
       }

@@ -53,7 +53,7 @@ var Renderer = function() {
 // Return a DOM fragment representation of the object
 Renderer.prototype.render = function( obj, options ) {
 
-  if ( options.raw ) {
+  if ( options && options.raw ) {
     var pre = this.setText( this.createEl('pre'), obj );
     pre.className = "json-view";
     return pre;
@@ -121,7 +121,7 @@ Renderer.prototype._attachValPrefix = function( frag, val, key, type ) {
 // Attach the element based on its type
 Renderer.prototype._attachKeyDom = function( frag, val, type ) {
 
-  var innerFrag, childEl, i;
+  var innerFrag, childEl, i, valString;
 
   switch ( type ) {
 
@@ -172,24 +172,18 @@ Renderer.prototype._attachKeyDom = function( frag, val, type ) {
       frag = this.append( frag, this.template('bracketClose') );
       break;
 
-    case 'number':
-      frag = this.setText( frag, val );
-      frag.classList.add( 'number' );
-      break;
-
-    case 'regex':
-      frag = this.setText( frag, val );
-      frag.classList.add( 'regex' );
-      break;
-
-    case 'boolean':
-      frag = this.setText( frag, val );
-      frag.classList.add( 'boolean' );
-      break;
-
     case 'null':
-      frag = this.setText( frag, 'null' );
-      frag.classList.add( 'null' );
+      valString = 'null';
+    case 'undefined':
+      valString = 'undefined';
+    case 'number':
+    case 'regex':
+    case 'boolean':
+      valString = String( val );
+      innerFrag = this.createEl( 'span' );
+      innerFrag = this.setText( innerFrag, valString );
+      innerFrag.classList.add( type );
+      frag = this.append( frag, innerFrag );
       break;
 
     default:
@@ -214,13 +208,6 @@ Renderer.prototype._buildObjEl = function( val, key ) {
   domFragment = this._attachKeyDom( domFragment, val, type );
 
   return domFragment;
-
-};
-
-// Update the DOM of the el with the diff
-Renderer.prototype.updateEl = function( el, delta ) {
-
-  el.innerHTML = 'updating!';
 
 };
 
@@ -377,6 +364,10 @@ Renderer.prototype.append = function( /* el1, el2, ... */ ) {
   }
   return el;
 
+};
+
+Renderer.prototype.insertAfter = function( referenceNode, newNode ) {
+  referenceNode.parentNode.insertBefore( newNode, referenceNode.nextSibling );
 };
 
 // Prepend a child to an el

@@ -8,10 +8,9 @@
 var Visualizer = function( obj, el ) {
 
   this.Sizzle = Sizzle;
-  this.jsondiffpatch = jsondiffpatch;
-  this._currentObj = this.deepClone( obj );
-  this._currentObjType = this.typeOfObj( obj );
+  this.obj = obj;
   this.el = el;
+  this.observer = jsonpatch.observe( this.obj, this.d._updateDomPls );
 
 };
 
@@ -38,38 +37,10 @@ Visualizer.prototype.typeOfObj = function( obj ) {
 
 };
 
-Visualizer.prototype.deepClone = function( obj ) {
-
-  switch ( this._currentObjType ) {
-    case 'object':
-    case 'array':
-      return JSON.parse( JSON.stringify(obj) );
-    // Regex objects are passed by value. Weird, right?
-    default:
-      return obj;
-  }
-
-};
-
 // Call this when your object changes
-Visualizer.prototype.update = function( obj ) {
+Visualizer.prototype.update = function() {
 
-  if ( typeof obj === 'undefined' ) {
-    return;
-  }
-
-  this._oldObj = this._currentObj;
-  this._currentObj = this.deepClone( obj );
-  this._currentObjType = this.typeOfObj( obj );
-  this._updateDelta();
-  this.d.update( this.el, this.delta );
-
-};
-
-// Update the current delta
-Visualizer.prototype._updateDelta = function() {
-
-  this.delta = this.jsondiffpatch.diff( this._oldObj, this._currentObj );
+  jsonpatch.generate( this.observer );
 
 };
 
@@ -80,7 +51,13 @@ Visualizer.prototype.render = function( options ) {
   options     = options || {};
   options.raw = options.raw || false;
 
-  var domFragment = this.r.render( this._currentObj, options  );
+  var domFragment = this.r.render( this.obj, options  );
   this.el.appendChild( domFragment );
+
+};
+
+Visualizer.prototype.destroy = function() {
+
+  jsonpatch.unobserve( this.obj, this.observer );
 
 };
