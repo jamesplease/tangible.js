@@ -30,10 +30,11 @@ var bb = [
 
 var c = {
   'hello': true,
-  'pasta': [
-    true,
-    23
-  ]
+  'pasta': {
+    is: {
+      good: true
+    }
+  }
 };
 
 var d = {
@@ -44,6 +45,6 @@ var d = {
   ]
 };
 
-var vis = new Visualizer( a, testEl );
+var vis = new Visualizer( c, testEl );
 
 vis.render();

@@ -8,6 +8,10 @@
 
 var Renderer = function() {
 
+  // Maps a diff value to its location on the DOM
+  // e.g.; '/path/to/val': '.js-visualizer > div:nth-child(3) > .inner-block > span'
+  this.diffMap = {};
+
   // Create basic elements from which to clone from
   this.base = {
 

@@ -14,7 +14,23 @@ var Updater = function( renderer ) {
 
 Updater.prototype._updateDomPls = function( diff ) {
 
-  console.log( 'asdf', diff );
+  var i = diff.length - 1;
+  for (i; i >= 0; i--) {
+    this._something( Updater.prototype._something(diff[i]) );
+  }
+
+};
+
+Updater.prototype._something = function( patch ) {
+
+  var selector = Updater.prototype._generateSelector( patch.path );
+  console.log('selector:', selector);
+
+};
+
+Updater.prototype._generateSelector = function( path ) {
+
+  return path;
 
 };
 
