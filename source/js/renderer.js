@@ -123,9 +123,15 @@ Renderer.prototype._attachValPrefix = function( frag, val, key, type ) {
 };
 
 // Attach the element based on its type
-Renderer.prototype._attachKeyDom = function( frag, val, type ) {
+Renderer.prototype._attachKeyDom = function( frag, val, key, type, baseSelector, diffPath ) {
 
   var innerFrag, childEl, i, valString;
+
+  // The selector for this value
+  baseSelector = baseSelector || 'span.js-visualizer > span.array-element';
+  // The path in the diff
+  diffPath = diffPath || '/';
+
 
   switch ( type ) {
 
@@ -133,30 +139,48 @@ Renderer.prototype._attachKeyDom = function( frag, val, type ) {
       innerFrag = this.createEl( 'span' );
       var stringEl = this.template( 'string' );
       var jsonVal = JSON.stringify( val );
+      // Remove quotes
       jsonVal = jsonVal.substring( 1, jsonVal.length - 1 );
       stringEl = this.setText( stringEl, jsonVal );
 
       innerFrag = this.wrap( innerFrag, stringEl, 'quote' );
       frag = this.append( frag, innerFrag );
+      // Need to keep track of nth child
+      baseSelector += ' > span';
+      console.log('Got the key', JSON.stringify(key).slice(1,-1), ';', val);
+      diffPath += JSON.stringify(key).slice(1,-1);
+      this.diffMap[ diffPath ] = baseSelector;
       break;
 
     case 'object':
+      var newPath;
       frag = this.append( frag, this.template('braceOpen') );
       if ( !this._empty(val) ) {
+        var childSelector = baseSelector + '> span.inner-block';
         frag = this.append( frag, this.template('ellipsis') );
         innerFrag = this.template( 'innerBlock' );
+        var ndex = 1;
         for ( i in val ) {
           if ( val.hasOwnProperty(i) ) {
-            childEl = this._buildObjEl( val[i], i );
+            if (key !== false) {
+              newPath = diffPath+JSON.stringify(key).slice(1,-1)+'/';
+              console.log('key', key, ';', newPath);
+            } else {
+              newPath = diffPath;
+            }
+            childEl = this._buildObjEl( val[i], i, childSelector + ' > span.object-property:nth-child('+ndex+')', newPath );
             if ( i < val.length - 1 ) {
               childEl = this.append( childEl, this.template('comma') );
             }
             innerFrag = this.append( innerFrag, childEl );
           }
+          ndex++;
         }
         frag = this.append( frag, innerFrag );
       }
       frag = this.append( frag, this.template('braceClose') );
+      console.log('lalala', key, ';', newPath);
+      this.diffMap[ newPath ] = baseSelector;
       break;
 
     case 'array':
@@ -188,6 +212,11 @@ Renderer.prototype._attachKeyDom = function( frag, val, type ) {
       innerFrag = this.setText( innerFrag, valString );
       innerFrag.classList.add( type );
       frag = this.append( frag, innerFrag );
+
+      baseSelector += ' > span.'+type;
+      diffPath += JSON.stringify(key).slice(1,-1);
+      this.diffMap[ diffPath ] = baseSelector;
+
       break;
 
     default:
@@ -202,14 +231,14 @@ Renderer.prototype._attachKeyDom = function( frag, val, type ) {
 
 };
 
-Renderer.prototype._buildObjEl = function( val, key ) {
+Renderer.prototype._buildObjEl = function( val, key, baseSelector, diffPath ) {
 
   var type = Visualizer.prototype.typeOfObj( val );
   var domFragment = this.createEl( 'span', 'object' );
   key = key || false;
 
   domFragment = this._attachValPrefix( domFragment, val, key, type );
-  domFragment = this._attachKeyDom( domFragment, val, type );
+  domFragment = this._attachKeyDom( domFragment, val, key, type, baseSelector, diffPath );
 
   return domFragment;
 

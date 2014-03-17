@@ -14,6 +14,8 @@ var Updater = function( renderer ) {
 
 Updater.prototype._updateDomPls = function( diff ) {
 
+  console.log('Updating', diff);
+
   var i = diff.length - 1;
   for (i; i >= 0; i--) {
     this._something( Updater.prototype._something(diff[i]) );

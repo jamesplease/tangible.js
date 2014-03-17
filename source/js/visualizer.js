@@ -10,6 +10,10 @@ var Visualizer = function( obj, el ) {
   this.Sizzle = Sizzle;
   this.obj = obj;
   this.el = el;
+
+  this.r = new Renderer();
+  this.d = new Updater( this.r, this.el );
+  
   this.observer = jsonpatch.observe( this.obj, this.d._updateDomPls );
 
 };

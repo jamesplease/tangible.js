@@ -1,4 +1,5 @@
 var testEl = document.getElementById( 'test' );
+var testArrayEl = document.getElementById( 'array-test' );
 
  var a = [
   'one',
@@ -46,5 +47,7 @@ var d = {
 };
 
 var vis = new Visualizer( c, testEl );
+var visTwo = new Visualizer( b, testArrayEl );
 
 vis.render();
+visTwo.render();
