@@ -1,23 +1,20 @@
 /* Apply theme colors */
 
-.selection( @bg ) {
+.selection(@bg) {
   background: @bg;
   text-shadow: none;
 }
 
-.js-visualizer {
+.tangible-object {
   cursor: default;
+  color: @baseText;
   background: @bg;
   & ::-moz-selection{
-    .selection( @activeBg );
+    .selection(@activeBg);
   }
   & ::selection {
-    .selection( @activeBg );
-  } 
-}
-
-.comma, .sep {
-  color: @baseText;
+    .selection(@activeBg);
+  }
 }
 
 .ellipsis {
@@ -42,4 +39,8 @@
 
 .null {
   color: @null;
+}
+
+.undefined {
+  color: @undefined;
 }
