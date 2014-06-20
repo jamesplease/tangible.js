@@ -9,11 +9,11 @@
 
   // Create our nodes
   var stylesheetText = '<%= style %>';
-  var stylesheet = document.createElement("style");
-  var textNode = document.createTextNode("");
+  var stylesheet = document.createElement('style');
+  var textNode = document.createTextNode('');
 
   // Set properties
-  stylesheet.type = "text/css";
+  stylesheet.type = 'text/css';
   textNode.nodeValue = stylesheetText;
 
   // Lastly, append

@@ -142,50 +142,30 @@ var renderUtil = {
     return domUtil.createEl('span', type, valText);
   },
 
-  buildArrayDom: function(val, key, type, jsonPath, objectMap) {
-    var fragment = domUtil.fragment();
-    // Start by adding the open bracket and ellipsis
-    fragment = domUtil.append(fragment, domUtil.template('bracketOpen'), domUtil.template('ellipsis'));
-    var entryList = domUtil.template('entryList');
-
-    // If there are items then we must recursively build out their DOM nodes, as well
-    if (!valueUtil.isEmpty(val)) {
-      var i, childEl;
-
-      // Loop through each value, building its nodes
-      for (i = 0; i < val.length; i++) {
-        childEl = renderUtil.buildObjEl(val[i], i, jsonPath, objectMap);
-
-        entryList = domUtil.append(entryList, childEl);
-      }
-    }
-
-    // Attach the list, close the bracket and we're done
-    fragment = domUtil.append(fragment, entryList, domUtil.template('bracketClose'));
-    return fragment;
+  buildObjectDom: function() {
+    return renderUtil._buildListValue.apply(this, arguments);
   },
 
-  buildObjectDom: function(val, key, type, jsonPath, objectMap) {
+  buildArrayDom: function() {
+    return renderUtil._buildListValue.apply(this, arguments);
+  },
+
+  _buildListValue: function(val, key, type, jsonPath, objectMap) {
+    var bracketType = type === 'array' ? 'bracket' : 'brace';
     var fragment = domUtil.fragment();
-    // Start by adding the open brace and ellipsis
-    fragment = domUtil.append(fragment, domUtil.template('braceOpen'), domUtil.template('ellipsis'));
+    // Start by adding the open bracket and ellipsis
+    fragment = domUtil.append(fragment, domUtil.template(bracketType+'Open'), domUtil.template('ellipsis'));
     var entryList = domUtil.template('entryList');
 
-    // If there are items then we must recursively build out their DOM nodes, as well
-    if (!valueUtil.isEmpty(val)) {
-      var i, childEl;
+    // Recursively build the child nodes as well
+    var childEl;
+    util.each(val, function(childVal, childKey) {
+      childEl = renderUtil.buildObjEl(childVal, childKey, jsonPath, objectMap);
+      entryList = domUtil.append(entryList, childEl);
+    });
 
-      // Loop through each value, building its nodes
-      for (i in val) {
-        if (!val.hasOwnProperty(i)) { continue; }
-        childEl = renderUtil.buildObjEl(val[i], i, jsonPath, objectMap);
-
-        entryList = domUtil.append(entryList, childEl);
-      }
-    }
-
-    // Attach the list, close the brace and we're done
-    fragment = domUtil.append(fragment, entryList, domUtil.template('braceClose'));
+    // Attach the list, close the bracket and we're done
+    fragment = domUtil.append(fragment, entryList, domUtil.template(bracketType+'Close'));
     return fragment;
   }
 };

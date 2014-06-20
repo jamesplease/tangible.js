@@ -37,16 +37,16 @@ var valueUtil = {
     if (!valueUtil.isList(value)) {
       return;
     }
-    
-    var key;
-    for (key in value) {
-      if (value.hasOwnProperty(key)) {
-        return false;
-      }
-    }
-    return true;
+
+    var count = 0;
+    util.each(value, function() {
+      return count++;
+    });
+
+    return count ? false : true;
   },
 
+  // Whether or not we're dealing with a list
   isList: function(value) {
     var type = valueUtil.type(value);
     return type === 'object' || type === 'array';
