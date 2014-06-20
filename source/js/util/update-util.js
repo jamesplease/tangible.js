@@ -35,7 +35,7 @@ var updateUtil = {
     entryList = domUtil.append(entryList, newNode);
 
     // Ensure that the parent isn't empty anymore
-    parent.entryNode.className = 'entry';
+    updateUtil.checkParents(path, objectMap);
   },
 
   remove: function(path, value, objectMap) {
@@ -51,38 +51,57 @@ var updateUtil = {
   // be an empty list.
   checkParents: function(childPath, objectMap) {
     var parentPath = pathUtil.parentPath(childPath);
-    var results = updateUtil.matchPath(parentPath, objectMap);
 
-    if (!results.length) {
-      updateUtil.convertToEmpty(parentPath, objectMap);
+    var length = updateUtil.immediateChildren(parentPath, objectMap).length;
+    var parent = objectMap[parentPath];
+    parent.countNode.innerHTML = renderUtil.lengthString(length);
+
+    if (!length) {
+      updateUtil.convertToEmpty(parent);
+    } else {
+      parent.entryNode.className = 'entry';
     }
   },
 
-  convertToEmpty: function(parentPath, objectMap) {
-    var parent = objectMap[parentPath];
-    parent.entryNode.className += ' empty';
+  // Makes the target object appear empty
+  convertToEmpty: function(target) {
+    target.entryNode.className += ' empty';
   },
 
-  // Returns an array of objects in the objectMap that
-  // begin with the specified path
-  matchPath: function(path, objectMap) {
-    path = path === '/' ? '/' : path + '/';
+  // Returns the paths of all children
+  allChildren: function(path, objectMap) {
+    path = pathUtil.normalizePath(path);
     var length = path.length;
     var results = [];
     util.each(objectMap, function(obj, objPath) {
-      if (objPath.substr(0, length) === path) {
+      if (objPath.substr(0, length) === path && objPath !== path) {
         results.push(objPath);
       }
     });
     return results;
   },
 
+  // Returns the paths of immediate children only
+  immediateChildren: function(path, objectMap) {
+    var children = updateUtil.allChildren(path, objectMap);
+    path = pathUtil.normalizePath(path);
+    var immediateChildren = [];
+
+    util.each(children, function(childPath) {
+      if (childPath.substr(path.length).split('/').length === 1) {
+        immediateChildren.push(childPath);
+      }
+    });
+
+    return immediateChildren;
+  },
+
   // Cleans the children from objectMap. Instead of
   // storing references to the children in the parent, we
   // loop and use string comparisons of the paths
   removeChildren: function(parentPath, objectMap) {
-    var children = updateUtil.matchPath(parentPath, objectMap);
-    util.each(children, function(obj, childPath) {
+    var children = updateUtil.allChildren(parentPath, objectMap);
+    util.each(children, function(childPath) {
       delete objectMap[childPath];
     });
   }

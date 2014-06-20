@@ -46,6 +46,14 @@ var valueUtil = {
     return count ? false : true;
   },
 
+  length: function(val) {
+    if (!valueUtil.isList(val)) {
+      return;
+    }
+
+    return val.length ? val.length : Object.keys(val).length;
+  },
+
   // Whether or not we're dealing with a list
   isList: function(value) {
     var type = valueUtil.type(value);

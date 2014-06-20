@@ -26,16 +26,28 @@
   }
 }
 
-.collapsed > .entry > .value {
-  > .entry-list {
-    display: none;
+.count {
+  display: none;
+}
+
+.collapsed {
+
+  > .count {
+    display: inline;
   }
 
-  > .ellipsis {
-    margin: 0 2px;
+  > .entry > .value {
 
-    &:after {
-      content: "…";
+    > .entry-list {
+      display: none;
+    }
+
+    > .ellipsis {
+      margin: 0 2px;
+
+      &:after {
+        content: "…";
+      }
     }
   }
 }

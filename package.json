@@ -1,6 +1,6 @@
 {
   "name": "tangible.js",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "Create living DOM representations of Javascript objects.",
   "main": "build/tangible.js",
   "scripts": {

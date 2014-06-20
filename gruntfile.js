@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-  // Pass in the theme via `grunt --theme=mytheme`; defaults to 'tomorrow'
+  // Pass in the theme via `grunt --theme mytheme`; defaults to 'tomorrow'
   var theme = grunt.option('theme') || 'tomorrow';
 
   grunt.initConfig({
