@@ -1,37 +1,35 @@
 {
-  "name": "object-visualizer.js",
-  "version": "0.1.0",
-  "description": "Visualize dynamic javascript objects with the DOM.",
-  "main": "visualizer.js",
+  "name": "tangible.js",
+  "version": "0.2.0",
+  "description": "Create living DOM representations of Javascript objects.",
+  "main": "build/tangible.js",
   "scripts": {
     "test": "grunt test"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jmeas/object-visualizer.js.git"
+    "url": "https://github.com/jmeas/tangible.js.git"
   },
   "keywords": [
     "javascript",
     "object",
     "visualizer",
     "diff",
+    "json",
+    "patch",
     "dom"
   ],
   "author": "Jmeas",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jmeas/object-visualizer.js/issues"
-  },
-  "dependencies": {
-    "jsondiffpatch": "0.0.11",
-    "sizzle": "~1.1.0"
+    "url": "https://github.com/jmeas/tangible.js/issues"
   },
   "devDependencies": {
-    "grunt-preprocess": "~4.0.0",
-    "grunt-contrib-uglify": "~0.3.2",
-    "grunt-contrib-less": "~0.9.0",
-    "matchdep": "~0.3.0",
+    "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-jshint": "~0.8.0",
-    "grunt-contrib-clean": "~0.5.0"
+    "grunt-contrib-less": "~0.9.0",
+    "grunt-contrib-uglify": "^0.5.0",
+    "grunt-preprocess": "~4.0.0",
+    "matchdep": "~0.3.0"
   }
 }

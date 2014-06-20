@@ -16,3 +16,4 @@ node_modules
 bower_components
 test/syntax.json
 .tmp
+test

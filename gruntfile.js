@@ -1,18 +1,17 @@
-module.exports = function( grunt ) {
-
-  require( 'matchdep' ).filterDev( 'grunt-*' ).forEach( grunt.loadNpmTasks );
+module.exports = function(grunt) {
+  require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
   // Pass in the theme via `grunt --theme=mytheme`; defaults to 'tomorrow'
   var theme = grunt.option('theme') || 'tomorrow';
 
   grunt.initConfig({
 
-    clean: [ '.tmp', 'build' ],
+    clean: ['.tmp', 'build'],
 
     preprocess: {
       js: {
-        src:   'source/js/wrapper.js',
-        dest: '.tmp/visual-json.js'
+        src:  'source/js/wrapper.js',
+        dest: '.tmp/tangible.js'
       },
       less: {
         options: {
@@ -21,7 +20,19 @@ module.exports = function( grunt ) {
           }
         },
         src: 'source/less/style.less',
-        dest: '.tmp/visual-json.less'
+        dest: '.tmp/tangible.less'
+      }
+    },
+
+    processor: {
+      options: {
+        data: {
+          style: '<%= less.base.dest %>'
+        }
+      },
+      injector: {
+        src: 'source/js/injector/injector.js',
+        dest: '.tmp/injector.js'
       }
     },
 
@@ -31,30 +42,46 @@ module.exports = function( grunt ) {
         '-W064': true
       },
       main: {
-        src: '<%= preprocess.js.dest %>'
+        src: ['source/js/**/*', '!source/js/wrapper.js']
       }
     },
 
     uglify: {
-      build: {
+      core: {
         src:  '<%= preprocess.js.dest %>',
-        dest: 'build/visual-json.js'
+        dest: 'build/tangible.js'
+      },
+      bundle: {
+        src:  ['<%= preprocess.js.dest %>', 'bower_components/fast-json-patch/src/json-patch-duplex.js'],
+        dest: 'build/tangible.bundle.js'
       }
     },
 
     less: {
       options: {
-        paths: [ 'source/less', 'themes' ],
+        paths: ['source/less', 'themes'],
+        cleancss: true
       },
       base: {
         src:  '<%= preprocess.less.dest %>',
-        dest: 'build/virtual-json.css'
+        dest: '.tmp/tangible.css'
       }
     }
+  });
+
+  grunt.registerMultiTask('processor', 'Processes JS files as Lo Dash templates', function() {
+
+    var
+    options   = this.options(),
+    template  = grunt.file.read(this.data.src),
+    style     = grunt.file.read(options.data.style),
+    variables = { style: style };
+
+    template = grunt.template.process(template, { data: variables });
+    grunt.file.write(this.data.dest, template);
 
   });
 
   // Build the default theme: Tomorrow (light)
-  grunt.registerTask( 'default', ['clean', 'preprocess', 'jshint', 'uglify', 'less:'] );
-
+  grunt.registerTask('default', ['clean', 'preprocess:less', 'less', 'processor', 'preprocess:js', 'jshint', 'uglify']);
 };

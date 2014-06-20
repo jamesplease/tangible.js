@@ -1,16 +1,19 @@
 {
-  "name": "object-visualizer.js",
-  "version": "0.1.0",
-  "homepage": "https://github.com/jmeas/object-visualizer.js",
+  "name": "tangible.js",
+  "version": "0.2.0",
+  "homepage": "https://github.com/jmeas/tangible.js",
   "authors": [
     "Jmeas <jellyes2@gmail.com>"
   ],
-  "description": "Visualize dynamic javascript objects in the DOM.",
-  "main": "visualize.js",
+  "description": "Create living DOM representations of Javascript objects.",
+  "main": "build/tangible.js",
   "keywords": [
     "visualize",
     "javascript",
     "object",
+    "json",
+    "patch",
+    "diff",
     "dom"
   ],
   "license": "MIT",
@@ -22,8 +25,6 @@
     "tests"
   ],
   "dependencies": {
-    "jsondiffpatch": "~0.0.11",
-    "jquery": "~2.1.0",
-    "sizzle": "~1.10.18"
+    "fast-json-patch": "~0.3.7"
   }
 }
