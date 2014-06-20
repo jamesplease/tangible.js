@@ -10,7 +10,7 @@ var Tangible = function(obj) {
   this._observers = [];
 };
 
-// Minifies better
+// Minifies better.
 var tangiblePrototype = Tangible.prototype;
 
 // Initial render of the DOM into an el
@@ -29,30 +29,24 @@ tangiblePrototype.render = function(el) {
 
 // Shut down the instance of tangible
 tangiblePrototype.destroy = function() {
-  this._emptyEls();
-  this._removeObservers();
+  
+  // Empty the elements
+  util.each(this._els, domUtil.empty);
+  this._els = [];
+
+  // Remove all of our observers
+  util.each(this._observers, this._unobserve, this);
+  this._observers = [];
+
   delete this._obj;
 };
 
-tangiblePrototype._removeObservers = function() {
-  var i = 0;
-  for (i; i < this._observers.length; i++) {
-    jsonpatch.unobserve(this._obj, this._observers[i]);
-  }
-  this._observers = [];
-};
-
-// Remove the contents of all of the els of this instance of tangible
-tangiblePrototype._emptyEls = function() {
-  var i = 0;
-  for (i; i < this._els.length; i++) {
-    this._els[i].innerHTML = '';
-  }
-  this._els = [];
+// Remove an observer
+tangiblePrototype._unobserve = function(observer) {
+  jsonpatch.unobserve(this._obj, observer);
 };
 
 // Shuts down our listener on interactive
 Tangible.stopListening = function() {
   interactive.destroy();
 };
-

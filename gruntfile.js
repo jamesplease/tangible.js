@@ -39,10 +39,11 @@ module.exports = function(grunt) {
     jshint: {
       options: {
         '-W086': true,
-        '-W064': true
+        '-W064': true,
+        'jshintrc': true
       },
       main: {
-        src: ['source/js/**/*', '!source/js/wrapper.js']
+        src: '<%= preprocess.js.dest %>'
       }
     },
 

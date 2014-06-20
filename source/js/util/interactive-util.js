@@ -49,19 +49,17 @@ var interactiveUtil = {
     }
   },
 
-  // Collapse an element
+  // Collapse element(s)
   collapse: function(elements) {
-    var i = elements.length - 1;
-    for (i; i >= 0; i--) {
-      elements[i].classList.add('collapsed');
-    }
+    util.each(elements, function(el) {
+      el.classList.add('collapsed');
+    });
   },
 
-  // Expand an element
+  // Expand element(s)
   expand: function(elements) {
-    var i = elements.length - 1;
-    for (i; i >= 0; i--) {
-      elements[i].classList.remove('collapsed');
-    }
+    util.each(elements, function(el) {
+      el.classList.remove('collapsed');
+    });
   }
 };

@@ -42,18 +42,23 @@ var domUtil = {
   // Append any number of elements to the parent el
   append: function(/* parentEl, el1, el2 ... */) {
     var el = Array.prototype.shift.call(arguments);
-    var a, childEl;
-    for (a = 0; a < arguments.length; a++) {
-      childEl = arguments[a];
-      if (!childEl) { continue; }
-      if (childEl.constructor == Array) {
+
+    util.each(arguments, function(childEl) {
+      if (!childEl) { return; }
+      if (childEl.constructor === Array) {
         domUtil.append.apply(this, [el].concat(childEl));
       }
       else {
         el.appendChild(childEl);
       }
-    }
+    });
+    
     return el;
+  },
+
+  // Empty the contents of the element
+  empty: function(el) {
+    el.innerHTML = '';
   },
 
   // Replace oldNode with newNode
@@ -69,15 +74,16 @@ var domUtil = {
   // Find a direct descendent of parent by className
   childByClass: function(parent, className) {
     var children = parent.children;
-    var i = 0;
-    for (i; i<children.length; i++) {
-      if (children[i].className === className) {
-        return children[i];
+    var match;
+    util.each(children, function(child) {
+      if (child.className === className) {
+        match = child;
       }
-    }
+    });
+    return match;
   },
 
-  // Wrap a DOM element in [], {}, or ""
+  // Wrap a DOM element in a template. Usually [], {}, or ""
   wrap: function(parent, el, type) {
     return domUtil.append(
       parent,

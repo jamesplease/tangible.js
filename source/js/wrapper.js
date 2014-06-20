@@ -6,6 +6,7 @@
 
   // @include util/util.js
   // @include util/dom-util.js
+  // @include util/path-util.js
   // @include util/value-util.js
   // @include util/render-util.js
   // @include util/update-util.js
