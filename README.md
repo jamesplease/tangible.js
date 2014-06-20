@@ -1,6 +1,6 @@
 # tangible.js
 
-Create [living DOM representations](https://i.cloudup.com/8ugQflIQnK.gif) of Javascript objects.
+Create [living DOM representations](https://i.cloudup.com/8ugQflIQnK.gif) of Javascript objects. Play with a [live example here](http://jmeas.com/github/tangible/).
 
 ![tangible.js](https://i.cloudup.com/CFlpyVo9Dx.png)
 
