@@ -6,6 +6,11 @@
 
 var pathUtil = {
 
+  // If path is a parent path, it must end in /
+  normalizePath: function(path) {
+    return path === '/' ? '/' : path + '/';
+  },
+
   // Get the parent path from a child path
   // e.g.;  /my/object/2 => /my/object
   parentPath: function(childPath) {

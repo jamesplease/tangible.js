@@ -28,6 +28,13 @@ var renderUtil = {
     var keyDom = renderUtil.buildKey(val, key, type);
     var valueDom = renderUtil.buildValue(val, key, type, jsonPath, objectMap);
 
+    var comma = domUtil.template('comma');
+    var length = valueUtil.length(val);
+    var countNode;
+    if (length !== undefined) {
+      countNode = domUtil.createEl('span', 'count', renderUtil.lengthString(length));
+    }
+
     // Save the node to our array
     var data = {
       entryNode: wrapperDom,
@@ -35,15 +42,15 @@ var renderUtil = {
       valueNode: valueDom,
       keyNode: keyDom,
       type: type,
-      value: val
+      value: val,
+      countNode: countNode
     };
     objectMap[jsonPath] = data;
     
     // Append our key and value to the wrapper
     wrapperDom = domUtil.append(wrapperDom, arrowDom, keyDom, valueDom);
 
-    var comma = domUtil.template('comma');
-    domFragment = domUtil.append(domFragment, wrapperDom, comma);
+    domFragment = domUtil.append(domFragment, wrapperDom, comma, countNode);
 
     return domFragment;
   },
@@ -167,5 +174,10 @@ var renderUtil = {
     // Attach the list, close the bracket and we're done
     fragment = domUtil.append(fragment, entryList, domUtil.template(bracketType+'Close'));
     return fragment;
-  }
+  },
+
+  lengthString: function(length) {
+    var plural = length === 1 ? '' : 's';
+    return ' // ' + length + ' item' + plural;
+  },
 };
